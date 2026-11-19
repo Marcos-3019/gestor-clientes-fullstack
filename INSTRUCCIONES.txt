@@ -1,0 +1,27 @@
+MIGRACIÓN DE CLIENTFLOW A TURSO
+
+1) Haz una copia de seguridad de la carpeta actual del proyecto.
+2) Descomprime este paquete.
+3) Copia package.json, database.js, server.js y .env.example a la carpeta raíz del proyecto y acepta reemplazar los archivos.
+4) En la carpeta raíz del proyecto, elimina package-lock.json. Se regenerará al instalar las nuevas dependencias.
+5) Abre PowerShell en la carpeta del proyecto y ejecuta:
+
+   npm install
+
+6) Si todavía NO existe un archivo .env, créalo copiando .env.example:
+
+   Copy-Item .env.example .env
+
+   Si ya existe .env, NO lo sobrescribas: abre el archivo existente.
+7) Abre .env con el Bloc de notas. Añade o actualiza TURSO_DATABASE_URL y sustituye PEGA_AQUI_TU_TOKEN_PRIVADO por el token que generaste en Turso. No compartas el token ni lo subas a GitHub.
+8) Guarda .env y ejecuta:
+
+   npm run dev
+
+9) Comprueba http://localhost:3000 y que aparezcan los tres clientes de demostración.
+10) Comprueba también http://localhost:3000/api/health (debe mostrar {"status":"ok"}).
+
+IMPORTANTE:
+- No subas el archivo .env a GitHub. Está excluido por .gitignore.
+- La URL de Turso incluida en .env.example corresponde a la base clientflow que has creado.
+- Si algo falla, no borres la base de datos de Turso: copia el error de PowerShell y lo revisamos.
