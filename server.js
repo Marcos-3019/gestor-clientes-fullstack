@@ -39,7 +39,12 @@ function cookie(req) {
     .map((v) => v.trim())
     .find((v) => v.startsWith(COOKIE + "="));
 
-  return entry ? decodeURIComponent(entry.slice(COOKIE.length + 1)) : null;
+  if (!entry) return null;
+  try {
+    return decodeURIComponent(entry.slice(COOKIE.length + 1));
+  } catch {
+    return null;
+  }
 }
 
 async function passwordHash(password) {
@@ -439,13 +444,13 @@ app.get(
 
     // Validación corregida de la fecha inicial.
     if (/^\d{4}-\d{2}-\d{2}$/.test(from)) {
-      where.push("date(created_at)>=date(?)");
+      where.push("created_at::date >= ?::date");
       args.push(from);
     }
 
     // Validación corregida de la fecha final.
     if (/^\d{4}-\d{2}-\d{2}$/.test(to)) {
-      where.push("date(created_at)<=date(?)");
+      where.push("created_at::date <= ?::date");
       args.push(to);
     }
 
@@ -460,9 +465,9 @@ app.get(
       sort === "oldest"
         ? "created_at ASC, id ASC"
         : sort === "name_asc"
-          ? "name COLLATE NOCASE ASC, id ASC"
+          ? "LOWER(name) ASC, id ASC"
           : sort === "name_desc"
-            ? "name COLLATE NOCASE DESC, id DESC"
+            ? "LOWER(name) DESC, id DESC"
             : "created_at DESC, id DESC";
 
     const total = Number(count.rows[0].total || 0);
@@ -626,7 +631,7 @@ app.use((err, _req, res, _next) => {
 initializeDatabase()
   .then(() => {
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`ClientFlow en puerto ${PORT}`);
+      console.log(`ClientFlow conectado a PostgreSQL y escuchando en puerto ${PORT}`);
     });
   })
   .catch((err) => {
