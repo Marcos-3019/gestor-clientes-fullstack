@@ -4,3 +4,9 @@ data/*.db
 data/*.db-shm
 data/*.db-wal
 .DS_Store
+
+# Copias de seguridad locales
+backup-*/
+
+# Copias de seguridad locales
+backup-*/
