@@ -149,10 +149,8 @@ async function loadClients() {
   rows.innerHTML = result.items
     .map((client) => {
       const created = client.created_at
-        ? new Date(
-            client.created_at.replace(" ", "T") + "Z",
-          ).toLocaleDateString("es-ES")
-        : "—";
+        ? new Date(client.created_at).toLocaleDateString("es-ES")
+        : "-";
 
       return `
       <tr>
