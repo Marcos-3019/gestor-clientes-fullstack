@@ -18,17 +18,54 @@
     <script src="/app.js" defer></script>
   </head>
   <body>
-    <div class="app-shell">
+
+    <main class="auth-screen" id="auth-screen" hidden>
+      <section class="auth-card">
+        <a class="brand auth-brand" href="#"><span class="brand-mark">C</span><span>clientflow</span></a>
+        <span class="eyebrow">TU ESPACIO DE TRABAJO</span>
+        <h1 id="auth-title">Crea tu cuenta</h1>
+        <p class="auth-intro" id="auth-intro">Organiza tus clientes y gestiona tus relaciones desde un único lugar.</p>
+        <div class="auth-tabs" role="tablist" aria-label="Acceso">
+          <button type="button" class="auth-tab active" id="show-register">Crear cuenta</button>
+          <button type="button" class="auth-tab" id="show-login">Iniciar sesión</button>
+        </div>
+        <form id="register-form" class="auth-form">
+          <label>Nombre completo<input name="name" required minlength="2" maxlength="80" autocomplete="name" placeholder="Tu nombre"></label>
+          <label>Correo electrónico<input name="email" type="email" required autocomplete="email" placeholder="tu@correo.com"></label>
+          <label>Contraseña<span class="password-field"><input name="password" type="password" required minlength="10" autocomplete="new-password" placeholder="Mínimo 10 caracteres"><button class="password-toggle" type="button" data-password-toggle aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
+          <button class="primary-button auth-submit" type="submit">Crear mi cuenta</button>
+        </form>
+        <form id="login-form" class="auth-form" hidden>
+          <label>Correo electrónico<input name="email" type="email" required autocomplete="email" placeholder="tu@correo.com"></label>
+          <label>Contraseña<span class="password-field"><input name="password" type="password" required autocomplete="current-password" placeholder="Tu contraseña"><button class="password-toggle" type="button" data-password-toggle aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
+          <button class="primary-button auth-submit" type="submit">Entrar en ClientFlow</button>
+        </form>
+        <details class="admin-setup">
+          <summary>Configuración inicial de administrador</summary>
+          <p>Solo para la primera configuración del propietario de ClientFlow. Necesitarás el código temporal configurado en el servidor.</p>
+          <form id="bootstrap-form" class="auth-form">
+            <label>Código temporal<span class="password-field"><input name="bootstrapToken" type="password" required autocomplete="off"><button class="password-toggle" type="button" data-password-toggle aria-label="Mostrar código" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
+            <label>Nombre completo<input name="name" required minlength="2" maxlength="80" value="Marcos Santos"></label>
+            <label>Correo electrónico<input name="email" type="email" required value="marcossantosmoreno79@gmail.com"></label>
+            <label>Contraseña<span class="password-field"><input name="password" type="password" required minlength="10" autocomplete="new-password" placeholder="Mínimo 10 caracteres"><button class="password-toggle" type="button" data-password-toggle aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
+            <button class="secondary-button auth-submit" type="submit">Crear cuenta administradora</button>
+          </form>
+        </details>
+        <p class="auth-error" id="auth-error" role="alert"></p>
+        <p class="auth-footnote">Tus clientes son privados y solo tú puedes acceder a ellos.</p>
+      </section>
+    </main>
+    <div class="app-shell" id="app-shell" hidden>
       <aside class="sidebar">
         <a class="brand" href="#"
           ><span class="brand-mark">C</span><span>clientflow</span></a
         >
         <p class="side-label">ESPACIO DE TRABAJO</p>
-        <a class="nav-item active" href="#"><span>▦</span> Resumen</a>
-        <a class="nav-item" href="#clients"><span>♙</span> Clientes</a>
+        <a class="nav-item active" href="#dashboard" data-view="dashboard"><span>▦</span> Resumen</a>
+        <a class="nav-item" href="#clients" data-view="clients"><span>♙</span> Clientes</a>
         <div class="sidebar-bottom">
           <div class="avatar">MS</div>
-          <div><strong>Marcos Santos</strong><small>Administrador</small></div>
+          <div><strong id="sidebar-user-name">Usuario</strong><small id="sidebar-user-email">Cuenta personal</small></div>
         </div>
       </aside>
       <main class="main">
@@ -37,14 +74,17 @@
             <span class="eyebrow">PANEL DE CONTROL</span>
             <h1>Resumen</h1>
           </div>
-          <button class="primary-button" id="add-client">
-            ＋ Nuevo cliente
-          </button>
+          <div class="topbar-actions">
+            <button class="secondary-button" id="logout-button" type="button">Cerrar sesión</button>
+            <button class="primary-button" id="add-client">
+              ＋ Nuevo cliente
+            </button>
+          </div>
         </header>
         <section class="welcome">
           <div>
             <span class="welcome-kicker">TU NEGOCIO, BAJO CONTROL</span>
-            <h2>Hola, Marcos <span>✦</span></h2>
+            <h2>Hola, <span id="welcome-user-name">usuario</span> <span>✦</span></h2>
             <p>Este es el estado actual de tu cartera de clientes.</p>
           </div>
           <div class="welcome-art" aria-hidden="true">✳</div>
@@ -80,11 +120,11 @@
             <strong id="stat-leads">—</strong><small>Por cualificar</small>
           </article>
         </section>
-        <section class="content-card" id="clients">
+        <section class="content-card clients-page" id="clients-page" hidden>
           <div class="section-heading">
             <div>
               <span class="eyebrow">RELACIONES</span>
-              <h2>Tu cartera de clientes</h2>
+              <h2>Todos tus clientes</h2>
             </div>
             <span class="result-count" id="result-count">Cargando…</span>
           </div>
@@ -94,7 +134,7 @@
               ><input
                 id="search"
                 type="search"
-                placeholder="Buscar por nombre, email o empresa…"
+                placeholder="Buscar por nombre, empresa, email o teléfono…"
                 aria-label="Buscar clientes" /></label
             ><select id="status-filter" aria-label="Filtrar por estado">
               <option value="">Todos los estados</option>
@@ -102,6 +142,9 @@
               <option value="prospect">Prospecto</option>
               <option value="lead">Nuevo contacto</option>
             </select>
+            <label class="date-filter">Desde <input id="date-from" type="date" aria-label="Fecha de alta desde"></label>
+            <label class="date-filter">Hasta <input id="date-to" type="date" aria-label="Fecha de alta hasta"></label>
+            <select id="sort-filter" aria-label="Ordenar clientes"><option value="newest">Más recientes</option><option value="oldest">Más antiguos</option><option value="name_asc">Nombre A-Z</option><option value="name_desc">Nombre Z-A</option></select>
           </div>
           <div class="table-wrap">
             <table>
@@ -111,6 +154,7 @@
                   <th>EMPRESA</th>
                   <th>ESTADO</th>
                   <th>CONTACTO</th>
+                  <th>FECHA DE ALTA</th>
                   <th></th>
                 </tr>
               </thead>
@@ -119,7 +163,12 @@
           </div>
           <div class="empty-state" id="empty-state" hidden>
             <span>⌕</span><strong>No hay clientes para mostrar</strong>
-            <p>Prueba con otra búsqueda o añade un nuevo cliente.</p>
+            <p>Prueba con otros filtros o añade un nuevo cliente.</p>
+          </div>
+          <div class="pagination">
+            <label>Mostrar <select id="page-size"><option>10</option><option>25</option><option>50</option><option>100</option></select> por página</label>
+            <span id="page-info">Página 1 de 1</span>
+            <div><button class="secondary-button" id="prev-page" type="button">Anterior</button><button class="secondary-button" id="next-page" type="button">Siguiente</button></div>
           </div>
         </section>
         <footer>
@@ -205,7 +254,7 @@
           ¿Estás seguro de que quieres eliminar a
           <strong id="delete-client-name"></strong>?
         </p>
-        <small>Esta acción ha sido solicitada por Marcos Santos.</small>
+        <small>Esta acción eliminará el cliente de tu cartera.</small>
 
         <div class="dialog-actions">
           <button type="button" class="secondary-button" id="cancel-delete">
